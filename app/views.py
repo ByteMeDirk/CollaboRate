@@ -3,17 +3,18 @@ from django.shortcuts import render, redirect
 
 from app.models import Auth0User
 from django.contrib.auth import logout as auth_logout
+from collabo_rate import settings
 
 
-def home(request):
+def home_view(request):
     return render(request, "app/home.html", {})
 
 
-def login(request):
-    return render(request, "app/login.html", {})
+def login_view(request):
+    return redirect(settings.LOGIN_URL)
 
 
-def logout(request):
+def logout_view(request):
     auth_logout(request)
     return redirect("/")
 
@@ -31,5 +32,5 @@ def auth0_callback(request):
         user.save()
 
     # Log the user in and redirect to the desired page
-    login(request, user)
+    login_view(request, user)
     return redirect("/")
