@@ -25,7 +25,7 @@ def login_view(request):
 @login_required
 def logout_view(request):
     auth_logout(request)
-    return redirect("/")
+    return redirect("/home/")
 
 
 def auth0_callback(request):
@@ -50,4 +50,4 @@ def auth0_callback(request):
 
     # Log the user in and redirect to the desired page
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
-    return redirect("/")
+    return redirect("/home/")
