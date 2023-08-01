@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load humanize %}
+{% block content %}
+    <h2>Edit profile</h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-lg-4 bg-secondary text-light pt-3 pb-3">
+                <div class="card bg-secondary">
+                <span class="m-3">
+                    <img src="{{ user.avatar.url }}" alt="{{ user.username }}'s avatar"
+                         class="card-img-top rounded-circle">
+                </span>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @{{ user.username }} <br>
+                            {% if user.first_name and user.last_name %}
+                                <p class="user-name">
+                                    <small>{{ user.first_name }} {{ user.last_name }}</small>
+                                </p>
+                            {% endif %}
+                        </h5>
+                        <div class="card-text">
+                            {{ user.bio }}
+                            <hr>
+                            <p>
+                                Date Joined: {{ user.date_joined|naturalday }}<br>
+                                Date of Birth: {{ user.date_of_birth }}<br>
+                                Location: {{ user.location }}
+                            </p>
+                            <hr>
+                            <p>
+                                <a href="{{ user.website }}" target="_blank" class="text-light">Website: {{ user.website }}</a><br>
+                                Education: {{ user.education }}
+                            </p>
+                        </div>
+                        <a href="#" class="btn btn-sm btn-dark">Settings</a>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8 pt-3 pb-3">
+                {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field|add_class:"form-control" }}
+                        {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                        {% for error in field.errors %}
+                            <div class="alert alert-danger">{{ error }}</div>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                <button type="submit" class="btn btn-primary">Update</button>
+            </div>
+        </div>
+    </form>
+{% endblock %}

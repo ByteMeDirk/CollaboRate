@@ -4,6 +4,7 @@ from auth0.authentication import GetToken, Users
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 
+from app.forms import EditProfileForm
 from app.models import Auth0User
 from django.contrib.auth import login, logout as auth_logout
 from collabo_rate import settings
@@ -51,3 +52,15 @@ def auth0_callback(request):
     # Log the user in and redirect to the desired page
     login(request, user, backend="django.contrib.auth.backends.ModelBackend")
     return redirect("/home/")
+
+
+# User Profile      ------------------------------------------------------------
+def edit_profile_view(request):
+    if request.method == "POST":
+        form = EditProfileForm(request.POST, request.FILES, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return render(request, "app/user.html", {"form": form})
+    else:
+        form = EditProfileForm(instance=request.user)
+    return render(request, "app/user.html", {"form": form, "user": request.user})

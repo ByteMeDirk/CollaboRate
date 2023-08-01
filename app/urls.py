@@ -1,6 +1,6 @@
 from django.urls import path, include
 
-from .views import home_view, login_view, logout_view, auth0_callback
+from .views import home_view, login_view, logout_view, auth0_callback, edit_profile_view
 
 urlpatterns = [
     # Auth0 authentication
@@ -10,4 +10,5 @@ urlpatterns = [
     path("social_auth/", include("social_django.urls")),
     # Local apps
     path("home/", home_view, name="home"),
+    path("user/profile/", edit_profile_view, name="profile"),
 ]

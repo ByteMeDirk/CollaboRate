@@ -39,11 +39,13 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "django.contrib.humanize",
     # Third party apps
-    "django.contrib.sites",
+    # "django.contrib.sites",
     "bootstrap5",
     "actstream",
     "social_django",
+    "widget_tweaks",
     # Local apps
     "collabo_rate",
     "app",  # The main web app
@@ -64,7 +66,7 @@ SOCIAL_AUTH_AUTH0_SCOPE = [
     "read:current_user",
     "update:current_user_metadata",
 ]
-SOCIAL_AUTH_AUTH0_CALLBACK_URL = 'http://localhost:8000/callback'
+SOCIAL_AUTH_AUTH0_CALLBACK_URL = "http://localhost:8000/callback"
 AUTHENTICATION_BACKENDS = {
     "social_core.backends.auth0.Auth0OAuth2",
     "django.contrib.auth.backends.ModelBackend",
