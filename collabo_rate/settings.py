@@ -56,12 +56,20 @@ SOCIAL_AUTH_TRAILING_SLASH = False  # Remove trailing slash from routes
 SOCIAL_AUTH_AUTH0_DOMAIN = os.getenv("SOCIAL_AUTH_AUTH0_DOMAIN")
 SOCIAL_AUTH_AUTH0_KEY = os.getenv("SOCIAL_AUTH_AUTH0_KEY")
 SOCIAL_AUTH_AUTH0_SECRET = os.getenv("SOCIAL_AUTH_AUTH0_SECRET")
-SOCIAL_AUTH_AUTH0_SCOPE = ["openid", "profile", "email"]
+SOCIAL_AUTH_AUTH0_SCOPE = [
+    "openid",
+    "profile",
+    "email",
+    "offline_access",
+    "read:current_user",
+    "update:current_user_metadata",
+]
+SOCIAL_AUTH_AUTH0_CALLBACK_URL = 'http://localhost:8000/callback'
 AUTHENTICATION_BACKENDS = {
     "social_core.backends.auth0.Auth0OAuth2",
     "django.contrib.auth.backends.ModelBackend",
 }
-LOGIN_URL = "/login/auth0"
+LOGIN_URL = "/callback"
 LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
