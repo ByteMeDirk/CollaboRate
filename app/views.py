@@ -1,24 +1,24 @@
 from urllib.parse import quote_plus
 
 from auth0.authentication import GetToken, Users
+from django.contrib.auth import login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from taggit.models import Tag
+
 from app.forms import EditProfileForm
 from app.models import Auth0User
-from django.contrib.auth import login, logout as auth_logout
 from collabo_rate import settings
-from django.views.generic import ListView, DetailView, CreateView, UpdateView
-from .models import Article, Comment, Rating
-from .forms import ArticleCreateForm, CommentForm, RatingForm
-
-from .utils import MAIN_CATEGORIES, SUBCATEGORIES
+from .forms import ArticleCreateForm
+from .models import Article
+from .utils import SUBCATEGORIES
 
 
 def home_view(request):
-    return render(request, "app/home.html", {})
+    # get top 10 tags in order of popularity in taggit
+    trending_tags = Article.tags.most_common()[:10]
+    return render(request, "app/home.html", {"trending_tags": trending_tags})
 
 
 def login_view(request):
@@ -88,6 +88,7 @@ def list_articles_by_tag_view(request, tag):
     )
 
 
+@login_required
 def create_article_view(request):
     form = ArticleCreateForm(request.POST or None, request.FILES or None)
     if form.is_valid():
@@ -106,6 +107,7 @@ def create_article_view(request):
     )
 
 
+@login_required
 def get_article_subcategories_view(request):
     main_category = request.GET.get("option")
     subcategories = SUBCATEGORIES.get(main_category, [])

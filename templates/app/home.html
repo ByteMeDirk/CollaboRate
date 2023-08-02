@@ -1,14 +1,42 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Home</h1>
-    <p> Welcome to the home page!</p>
-
-    {# is user logged in #}
-    {% if user.is_authenticated %}
-        <p>Hi {{ user.username }}!</p>
-        <p><a href="{% url 'logout' %}">logout</a></p>
-    {% else %}
-        <p>You are not logged in</p>
-        <a href="{% url 'login' %}">login</a>
-    {% endif %}
+    <div class="container-fluid mt-3">
+        {% if user.is_authenticated %}
+            <h2>Hi {{ user.username }} ✨</h2>
+            <hr>
+            <div class="row">
+                <div class="col-lg-3">
+                    <h3>Trending #️⃣</h3>
+                    {% for tag in trending_tags %}
+                        <a href="{% url "article_tags" tag.slug %}"><span
+                                class="badge bg-primary display-4">{{ tag }}</span></a>
+                    {% endfor %}
+                </div>
+            </div>
+        {% else %}
+            <h1 class="display-1">Welcome to Collabo💫Rate!</h1>
+            <hr class="mt-5 mb-5">
+            <div class="row text-center">
+                <div class="col-lg-8">
+                    <p>
+                        Unleash the power of collective intelligence with Collabo💫Rate! We're redefining the way
+                        knowledge
+                        is shared
+                        and ranked online. Our platform combines the power of federation and AI to create a dynamic
+                        space
+                        where
+                        users can post articles, engage in discussions, and contribute to the validation of content.
+                        Join us
+                        in our
+                        mission to democratize knowledge and foster a community of informed, engaged users.
+                    </p>
+                </div>
+                <div class="col-lg-4">
+                    <h1><span class="badge bg-success">Publish Articles</span></h1>
+                    <h1>⬇️</h1>
+                    <h1><span class="badge bg-success">Validate Users & Articles</span></h1>
+                </div>
+            </div>
+        {% endif %}
+    </div>
 {% endblock %}
