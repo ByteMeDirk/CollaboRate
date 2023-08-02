@@ -2,16 +2,14 @@
 {% block content %}
     <div class="container-fluid mt-3">
         {% if user.is_authenticated %}
-            <h2>Hi {{ user.username }} ✨</h2>
+            {% include "app/search.html" %}
             <hr>
-
             <div class="mt-3">
                 <h3>Trending #️⃣</h3>
                 {% for tag in trending_tags %}
                     <a href="{% url "article_tags" tag.slug %}" class="btn btn-sm btn-secondary mt-3">{{ tag }}</a>
                 {% endfor %}
             </div>
-            <hr>
             <div class="mt-3">
                 <h3>Latest Articles 📝</h3>
                 {% include "app/articles/article_widget.html" %}
@@ -41,6 +39,8 @@
                     <h1><span class="badge bg-success">Validate Users & Articles</span></h1>
                 </div>
             </div>
+            <hr>
+            {% include "app/search.html" %}
         {% endif %}
     </div>
 {% endblock %}

@@ -2,7 +2,8 @@
 {% load humanize %}
 {% block content %}
     <h1>Explore Articles</h1>
-    <div class="accordion accordion-flush" id="accordionFlush">
+    {% include "app/search.html" %}
+    <div class="accordion accordion-flush mt-3" id="accordionFlush">
         {% for category, articles in articles_by_category.items %}
             <div class="accordion-item">
                 <h2 class="accordion-header">

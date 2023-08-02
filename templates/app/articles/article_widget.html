@@ -2,29 +2,34 @@
 {% for article in articles %}
     <div class="card mt-3 text-dark">
         <div class="card-body">
-            <h5 class="card-title">{{ article.title }}</h5>
-            <p class="card-tex">
-                <small>
-                    {{ article.description|truncatewords:25 }}
-                </small>
-            </p>
-            <p>
-                <a href="{% url "article_detail" article.id %}" class="btn btn-sm btn-primary">Read</a>
-                {% for tag in article.tags.all %}
-                    <a href="{% url "article_tags" tag.slug %}" class="btn btn-sm btn-secondary">{{ tag }}</a>
-                {% endfor %}
-            </p>
-        </div>
-        <div class="card-footer">
-            {% if article.created_at|naturaltime == article.updated_at|naturaltime %}
-                Created: {{ article.created_at|naturaltime }}
-            {% else %}
-                Edited: {{ article.updated_at|naturaltime }}
-            {% endif %}
-            |
-            <a href="{% url "view_user" article.author.id %}">Author: @{{ article.author }}</a>
-            |
-            Rating: {{ article.calculate_rating }}
+            <figure>
+                <blockquote class="blockquote">
+                    <p>
+                        <a class="text-decoration-none"
+                           href="{% url "article_detail" article.id %}">{{ article.title }}</a>
+                        - <small>{{ article.description|truncatewords:25 }}</small>
+                    </p>
+                </blockquote>
+                <figcaption class="blockquote-footer">
+                    by <cite title="Source Title"><a
+                        href="{% url "view_user" article.author.id %}">@{{ article.author }}</a></cite>
+                </figcaption>
+                <p>
+                    {% if article.created_at|naturaltime == article.updated_at|naturaltime %}
+                        Created: {{ article.created_at|naturaltime }}
+                    {% else %}
+                        Edited: {{ article.updated_at|naturaltime }}
+                    {% endif %}
+                    |
+                    Rating: {{ article.calculate_rating }}
+                </p>
+                <p>
+                    {% for tag in article.tags.all %}
+                        <a href="{% url "article_tags" tag.slug %}"
+                           class="btn btn-sm btn-secondary">{{ tag }}</a>
+                    {% endfor %}
+                </p>
+            </figure>
         </div>
     </div>
 {% endfor %}

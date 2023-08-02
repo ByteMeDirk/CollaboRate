@@ -36,10 +36,10 @@ class ArticleCreateForm(forms.ModelForm):
     This class represents a form for creating an article.
     """
     description = forms.CharField(
-        max_length=50,
+        max_length=250,
         widget=forms.Textarea(attrs={"rows": 2}),
         required=True,
-        help_text="A short description of the article. Max 50 characters.",
+        help_text="A short description of the article. Max 250 characters.",
     )
 
     main_category = forms.CharField(

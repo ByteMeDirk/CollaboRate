@@ -11,7 +11,8 @@ from .views import (
     create_article_view,
     get_article_subcategories_view,
     list_articles_by_tag_view,
-detail_article_view
+    detail_article_view,
+    list_articles_by_search_view
 )
 
 urlpatterns = [
@@ -34,4 +35,5 @@ urlpatterns = [
     ),
     path("articles/tags/<str:tag>", list_articles_by_tag_view, name="article_tags"),
     path("articles/<int:article_id>/", detail_article_view, name="article_detail"),
+    path("articles/search/", list_articles_by_search_view, name="article_search")
 ]

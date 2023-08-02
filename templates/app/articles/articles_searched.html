@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block content %}
+    <h3>Searching for Articles containing the phrase <i>{{ query }}</i></h3>
+    <hr>
+    {% include "app/articles/article_widget.html" %}
+{% endblock %}

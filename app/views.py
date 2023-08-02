@@ -4,6 +4,7 @@ from auth0.authentication import GetToken, Users
 from django.contrib.auth import login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
 from django.db.models import Count
+from django.db.models import Q
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from taggit.models import Tag
@@ -110,6 +111,16 @@ def list_articles_by_tag_view(request, tag):
     articles = Article.objects.filter(tags=tag, published=True).order_by("-created_at")
     return render(
         request, "app/articles/articles_tagged.html", {"tag": tag, "articles": articles}
+    )
+
+
+def list_articles_by_search_view(request):
+    query = request.GET.get("q")
+    articles = Article.objects.filter(
+        Q(title__icontains=query) | Q(description__icontains=query) | Q(tags__name__in=[query]) & Q(published=True)
+    ).distinct()
+    return render(
+        request, "app/articles/articles_searched.html", {"query": query, "articles": articles}
     )
 
 
