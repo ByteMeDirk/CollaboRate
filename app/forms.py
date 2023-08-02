@@ -1,10 +1,9 @@
+from ckeditor.fields import RichTextField
 from django import forms
 from taggit.forms import TagWidget
 
 from .models import Auth0User, Article, Comment, Rating
-from .utils import MAIN_CATEGORIES, SUBCATEGORIES
-from ckeditor.fields import RichTextField
-from taggit.managers import TagField
+from .utils import MAIN_CATEGORIES
 
 
 class EditProfileForm(forms.ModelForm):
@@ -36,6 +35,12 @@ class ArticleCreateForm(forms.ModelForm):
     """
     This class represents a form for creating an article.
     """
+    description = forms.CharField(
+        max_length=50,
+        widget=forms.Textarea(attrs={"rows": 2}),
+        required=True,
+        help_text="A short description of the article. Max 50 characters.",
+    )
 
     main_category = forms.CharField(
         max_length=50,
@@ -46,7 +51,7 @@ class ArticleCreateForm(forms.ModelForm):
 
     class Meta:
         model = Article
-        fields = ["title", "body", "main_category", "subcategory", "tags"]
+        fields = ["title", "description", "body", "main_category", "subcategory", "tags"]
         widgets = {
             "tags": TagWidget(),
         }

@@ -1,0 +1,46 @@
+{# Here other users can see authors details and their articles etc #}
+{% extends "base.html" %}
+{% load widget_tweaks %}
+{% load humanize %}
+{% block content %}
+    <div class="container mt-3">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="card">
+                <span class="m-3">
+                    <img src="{{ author.avatar.url }}" alt="{{ author.username }}'s avatar"
+                         class="card-img-top rounded-circle" width="30">
+                </span>
+                    <div class="card-body">
+                        <h5 class="card-title">
+                            @{{ author.username }} <br>
+                            {% if author.first_name and author.last_name %}
+                                <p class="user-name">
+                                    <small>{{ author.first_name }} {{ author.last_name }}</small>
+                                </p>
+                            {% endif %}
+                        </h5>
+                        <div class="card-text">
+                            {{ author.bio }}
+                            <hr>
+                            <p>
+                                Date Joined: {{ author.date_joined|naturalday }}<br>
+                                Date of Birth: {{ author.date_of_birth }}<br>
+                                Location: {{ author.location }}
+                            </p>
+                            <hr>
+                            <p>
+                                <a href="{{ author.website }}" target="_blank">Website: {{ author.website }}</a><br>
+                                Education: {{ author.education }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <h3>Articles Published</h3>
+                {% include "app/articles/article_widget.html" %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

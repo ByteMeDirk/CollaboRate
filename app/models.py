@@ -1,9 +1,9 @@
-from django.db import models
-from django.contrib.auth.models import AbstractUser
-
 from ckeditor.fields import RichTextField
-from .utils import MAIN_CATEGORIES, SUBCATEGORIES
+from django.contrib.auth.models import AbstractUser
+from django.db import models
 from taggit.managers import TaggableManager
+
+from .utils import MAIN_CATEGORIES
 
 
 class Auth0User(AbstractUser):
@@ -12,14 +12,13 @@ class Auth0User(AbstractUser):
     """
 
     auth0_id = models.CharField(max_length=255)
-    bio = models.TextField(blank=True, null=True, default="static/avatars/default.png")
-    avatar = models.ImageField(upload_to="static/avatars/", blank=True, null=True)
+    bio = models.TextField(blank=True, null=True)
+    avatar = models.ImageField(upload_to="static/avatars/", blank=True, null=True, default="static/avatars/default.png")
     location = models.CharField(max_length=255, blank=True, null=True)
     date_of_birth = models.DateField(blank=True, null=True)
 
     # Rating matrix, users start with 15 and max is 30
-    reputation = models.IntegerField(default=15, blank=True, null=True, max_length=30)
-    authority = models.IntegerField(default=15, blank=True, null=True, max_length=30)
+    reputation = models.IntegerField(default=15, blank=True, null=True)
 
     # Custom fields similar to LinkedIn
     website = models.CharField(max_length=255, blank=True, null=True)
@@ -44,7 +43,11 @@ class Auth0User(AbstractUser):
 
 
 class Article(models.Model):
+    """
+    This class represents an article.
+    """
     title = models.CharField(max_length=255)
+    description = models.TextField(blank=True, null=True)
     author = models.ForeignKey(Auth0User, on_delete=models.CASCADE)
     body = RichTextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)

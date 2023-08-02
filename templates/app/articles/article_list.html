@@ -1,5 +1,54 @@
 {% extends "base.html" %}
+{% load humanize %}
 {% block content %}
     <h1>Explore Articles</h1>
-
+    <div class="accordion accordion-flush" id="accordionFlush">
+        {% for category, articles in articles_by_category.items %}
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#flush-collapse{{ forloop.counter }}" aria-expanded="false"
+                            aria-controls="flush-collapse{{ forloop.counter }}">
+                        {{ category }}
+                    </button>
+                </h2>
+            </div>
+            <div id="flush-collapse{{ forloop.counter }}" class="accordion-collapse collapse"
+                 data-bs-parent="#accordionFlush">
+                <div class="accordion-body card">
+                    {% for article in articles %}
+                        <figure>
+                            <blockquote class="blockquote">
+                                <p>
+                                    <a class="text-decoration-none"
+                                       href="{% url "article_detail" article.id %}">{{ article.title }}</a>
+                                    - <small>{{ article.description|truncatewords:25 }}</small>
+                                </p>
+                            </blockquote>
+                            <figcaption class="blockquote-footer">
+                                by <cite title="Source Title"><a
+                                    href="{% url "view_user" article.author.id %}">@{{ article.author }}</a></cite>
+                            </figcaption>
+                            <p>
+                                {% if article.created_at|naturaltime == article.updated_at|naturaltime %}
+                                    Created: {{ article.created_at|naturaltime }}
+                                {% else %}
+                                    Edited: {{ article.updated_at|naturaltime }}
+                                {% endif %}
+                                |
+                                Rating: {{ article.calculate_rating }}
+                            </p>
+                            <p>
+                                {% for tag in article.tags.all %}
+                                    <a href="{% url "article_tags" tag.slug %}"
+                                       class="btn btn-sm btn-secondary">{{ tag }}</a>
+                                {% endfor %}
+                            </p>
+                        </figure>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+    </div>
 {% endblock %}

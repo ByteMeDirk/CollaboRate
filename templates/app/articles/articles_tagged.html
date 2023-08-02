@@ -1,34 +1,6 @@
 {% extends "base.html" %}
-{% load humanize %}
 {% block content %}
     <h1>Explore Articles by <b>{{ tag }}</b></h1>
     <hr>
-    {% for article in articles %}
-        <div class="card mt-3 text-dark">
-            <div class="card-body">
-                <h5 class="card-title">{{ article.title }}</h5>
-                <p class="card-text">
-                    {{ article.body|safe|truncatewords:25 }}
-                </p>
-                <p>
-                    <a href="#" class="btn btn-sm btn-primary">Read</a>
-                    {% for tag in article.tags.all %}
-                        <a href="{% url "article_tags" tag.slug %}" class="btn btn-sm btn-secondary">{{ tag }}</a>
-                    {% endfor %}
-                </p>
-            </div>
-            <div class="card-footer">
-                {% if article.created_at|naturaltime == article.updated_at|naturaltime %}
-                    Created: {{ article.created_at|naturaltime }}
-                {% else %}
-                    Edited: {{ article.updated_at|naturaltime }}
-                {% endif %}
-                |
-                <a href="#">Author: @{{ article.author }}</a>
-                |
-                Rating: {{ article.calculate_rating }}
-            </div>
-        </div>
-    {% endfor %}
-
+    {% include "app/articles/article_widget.html" %}
 {% endblock %}

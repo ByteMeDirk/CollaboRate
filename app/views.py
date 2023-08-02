@@ -3,6 +3,7 @@ from urllib.parse import quote_plus
 from auth0.authentication import GetToken, Users
 from django.contrib.auth import login, logout as auth_logout
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from taggit.models import Tag
@@ -16,9 +17,14 @@ from .utils import SUBCATEGORIES
 
 
 def home_view(request):
-    # get top 10 tags in order of popularity in taggit
-    trending_tags = Article.tags.most_common()[:10]
-    return render(request, "app/home.html", {"trending_tags": trending_tags})
+    # get top 10 tags in order of popularity in taggit form articles where published is true
+    articles = Article.objects.filter(published=True)
+    tag_ids = articles.values_list('tags', flat=True)
+    trending_tags = Tag.objects.filter(id__in=tag_ids).annotate(num_times=Count('taggit_taggeditem_items')).order_by(
+        '-num_times')[:10]
+    # get top 5 latest articles where published is true
+    articles = Article.objects.filter(published=True).order_by("-created_at")[:5]
+    return render(request, "app/home.html", {"trending_tags": trending_tags, "articles": articles})
 
 
 def login_view(request):
@@ -74,15 +80,34 @@ def edit_profile_view(request):
     return render(request, "app/user.html", {"form": form, "user": request.user})
 
 
+@login_required
+def view_user_profile_view(request, user_id):
+    # if user is current user, redirect to edit profile
+    if int(request.user.id) == int(user_id):
+        return redirect("profile")
+    author = get_object_or_404(Auth0User, id=user_id)
+    articles = Article.objects.filter(author=author, published=True).order_by("-created_at")
+    return render(request, "app/view_user.html", {"author": author, "articles": articles})
+
+
 # Articles          ------------------------------------------------------------
 def list_articles_view(request):
-    context = {"articles": Article.objects.all()}
-    return render(request, "app/articles/article_list.html", context)
+    articles = Article.objects.filter(published=True)
+
+    # Create a dictionary to group the articles by category
+    articles_by_category = {}
+    for article in articles:
+        category = article.main_category
+        if category not in articles_by_category:
+            articles_by_category[category] = []
+        articles_by_category[category].append(article)
+
+    return render(request, "app/articles/article_list.html", {"articles_by_category": articles_by_category})
 
 
 def list_articles_by_tag_view(request, tag):
     tag = get_object_or_404(Tag, slug=tag)
-    articles = Article.objects.filter(tags=tag)
+    articles = Article.objects.filter(tags=tag, published=True).order_by("-created_at")
     return render(
         request, "app/articles/articles_tagged.html", {"tag": tag, "articles": articles}
     )
@@ -105,6 +130,11 @@ def create_article_view(request):
         "app/articles/article_create.html",
         {"form": form, "subcategories": SUBCATEGORIES},
     )
+
+
+def detail_article_view(request, article_id):
+    article = get_object_or_404(Article, id=article_id)
+    return render(request, "app/articles/article_detail.html", {"article": article})
 
 
 @login_required

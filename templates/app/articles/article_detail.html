@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load humanize %}
+{% block content %}
+    <div class="card mt-3">
+        <div class="card-header">
+            <h5 class="card-title">{{ article.title }}</h5>
+            <h6 class="card-subtitle mb-2 text-body-secondary">{{ article.description }}</h6>
+            <p class="card-text text-muted">
+                Created by
+                <a href="{% url "view_user" article.author.id %}">@{{ article.author }}</a>
+                {% if article.created_at|naturaltime == article.updated_at|naturaltime %}
+                    - {{ article.created_at|naturaltime }}
+                {% else %}
+                    - {{ article.updated_at|naturaltime }} (edited)
+                {% endif %}
+            </p>
+        </div>
+        <div class="card-body">
+            {{ article.body|safe }}
+        </div>
+        <div class="card-footer">
+            <div class="btn-group" role="group" aria-label="Basic outlined example">
+                Rating:&nbsp;
+                <button type="button" class="btn btn-outline-dark btn-sm">{{ article.calculate_rating }}</button>
+                <button type="button" class="btn btn-outline-dark btn-sm">👍</button>
+                <button type="button" class="btn btn-outline-dark btn-sm">👎</button>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
