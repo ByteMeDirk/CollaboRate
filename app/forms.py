@@ -1,6 +1,6 @@
-from ckeditor.fields import RichTextField
 from django import forms
 from taggit.forms import TagWidget
+from tinymce.widgets import TinyMCE
 
 from .models import Auth0User, Article, Comment, Rating
 from .utils import MAIN_CATEGORIES
@@ -47,7 +47,11 @@ class ArticleCreateForm(forms.ModelForm):
         widget=forms.Select(choices=MAIN_CATEGORIES),
         required=True,
     )
-    body = RichTextField(blank=True, null=True)
+    body = forms.CharField(
+        widget=TinyMCE(
+            attrs={'required': False, 'cols': 30, 'rows': 10}
+        )
+    )
 
     class Meta:
         model = Article

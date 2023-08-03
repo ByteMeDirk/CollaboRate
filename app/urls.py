@@ -21,6 +21,7 @@ urlpatterns = [
     path("login/", login_view, name="login"),
     path("logout/", logout_view, name="logout"),
     path("social_auth/", include("social_django.urls")),
+    path('tinymce/', include('tinymce.urls')),
     # Local apps ----------------------------------------------------------
     path("home/", home_view, name="home"),
     path("user/profile/", edit_profile_view, name="profile"),

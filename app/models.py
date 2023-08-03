@@ -1,4 +1,4 @@
-from ckeditor.fields import RichTextField
+from tinymce.models import HTMLField
 from django.contrib.auth.models import AbstractUser
 from django.db import models
 from taggit.managers import TaggableManager
@@ -49,7 +49,7 @@ class Article(models.Model):
     title = models.CharField(max_length=255)
     description = models.TextField(blank=True, null=True)
     author = models.ForeignKey(Auth0User, on_delete=models.CASCADE)
-    body = RichTextField(blank=True, null=True)
+    body = HTMLField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     raters = models.ManyToManyField(
