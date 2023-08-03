@@ -17,10 +17,41 @@
             <div id="flush-collapse{{ forloop.counter }}" class="accordion-collapse collapse"
                  data-bs-parent="#accordionFlush">
                 <div class="accordion-body card">
-                    {% include "app/articles/article_widget.html" %}
+                    {% for article in articles %}
+                        <div class="card mt-3">
+                            <div class="card-header">
+                                <h5 class="card-title">{{ article.title }}</h5>
+                                <h6 class="card-subtitle mb-2 text-body-secondary">{{ article.description }}</h6>
+                                <p class="card-text text-muted">
+                                    Author: <a href="{% url "view_user" article.author.id %}">@{{ article.author }}</a>
+                                    | Rating: {{ article.calculate_rating }}
+                                </p>
+                            </div>
+                            <div class="card-body">
+                                <div class="tags">
+                                    {% for tag in article.tags.all %}
+                                        <a href="{% url "article_tags" tag.slug %}"
+                                           class="badge bg-secondary">{{ tag }}</a>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                            <div class="card-footer">
+                                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                                    <a href="{% url "article_detail" article.id %}"
+                                       class="btn btn-outline-primary btn-sm">View Article</a>
+                                    <a href="{% url "article_detail" article.id %}#comments"
+                                       class="btn btn-outline-info btn-sm">View Comments
+                                        ({{ article.comments.count }})</a>
+                                    {% if user.is_authenticated and user.id == article.author.id %}
+                                        <a href="{% url "article_edit" article.id %}"
+                                           class="btn btn-outline-success btn-sm">Edit Article</a>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
                 </div>
             </div>
         {% endfor %}
-    </div>
     </div>
 {% endblock %}

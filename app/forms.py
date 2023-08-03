@@ -93,7 +93,9 @@ class ArticleEditForm(forms.ModelForm):
 
 class CommentCreateForm(forms.ModelForm):
     content = forms.CharField(
-        widget=forms.Textarea(attrs={"rows": 1}),
+        widget=TinyMCE(
+            attrs={'required': False, 'cols': 30, 'rows': 10},
+        )
     )
     class Meta:
         model = Comment

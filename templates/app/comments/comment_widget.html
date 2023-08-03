@@ -1,8 +1,10 @@
-{% load humanize %}
 {% load widget_tweaks %}
+{% load humanize %}
+{% load static %}
 <section>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
+        {{ form.media }}
         <div class="mt-3">
             <div class="justify-content-center">
                 <div class="card">
@@ -13,8 +15,9 @@
                                      class="rounded-circle shadow-1-strong me-3" width="60" height="60">
 
                                 <div>
-                                    <h6 class="fw-bold text-primary mb-1">
-                                        <a href="{% url "view_user" comment.author.id %}">@{{ comment.author }}</a>
+                                    <h6 class="fw-bold text-primary">
+                                        <a href="{% url "view_user" comment.author.id %}"
+                                           class="text-decoration-none">@{{ comment.author }}</a>
                                     </h6>
                                     <p class="text-muted small mb-0">
                                         {% if comment.created_at|naturaltime == comment.updated_at|naturaltime %}
@@ -25,13 +28,13 @@
                                     </p>
                                 </div>
                             </div>
-                            <p class="mt-3 mb-4 pb-2">
-                                {{ comment.content }}
+                            <p class="mb-4 pb-2">
+                                {{ comment.content|safe }}
                             </p>
                             <div class="small d-flex justify-content-start">
                                 {% if comment.author.id == user.id %}
                                     <a href="{% url "comment_delete" comment.id article.id %}"
-                                       class="d-flex align-items-center me-3">
+                                       class="d-flex align-items-center me-3 text-decoration-none">
                                         <p class="mb-0">Delete</p>
                                     </a>
                                 {% endif %}
@@ -41,10 +44,8 @@
                     </div>
                     <div class="card-footer py-3 border-0" style="background-color: #f8f9fa;">
                         <div class="d-flex flex-start w-100">
-                            <img class="rounded-circle shadow-1-strong me-3"
-                                 src="{{ user.avatar.url }}" alt="avatar"
-                                 width="40"
-                                 height="40"/>
+                            <img class="rounded-circle shadow-1-strong me-3" src="{{ user.avatar.url }}" alt="avatar"
+                                 width="40" height="40"/>
                             <div class="form-outline w-100">
                                 <label for="id_content">Comment</label>
                                 {{ form.content|add_class:"form-control" }}

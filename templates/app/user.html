@@ -2,44 +2,52 @@
 {% load widget_tweaks %}
 {% load humanize %}
 {% block content %}
-    <h2>Edit profile</h2>
-    <form method="post" enctype="multipart/form-data">
-        {% csrf_token %}
-        <div class="row">
-            <div class="col-lg-4 pt-3 pb-3">
-                <div class="card">
-                <span class="m-3">
-                    <img src="{{ user.avatar.url }}" alt="{{ user.username }}'s avatar"
-                         class="card-img-top rounded-circle">
-                </span>
+    <h2 class="mb-4">Edit Profile</h2>
+    <div class="row">
+        <div class="col-lg-3">
+                <!-- Twitter-like profile image -->
+                <div class="text-center mb-3">
+                    <img src="{{ user.avatar.url }}" alt="Profile Image" class="rounded-circle img-fluid" width="150">
+                </div>
+
+                <!-- User's username -->
+                <div class="text-center mb-3">
+                    <h4>@{{ user.username }}</h4>
+                </div>
+
+                <!-- User's bio -->
+                <div class="card mb-3">
                     <div class="card-body">
-                        <h5 class="card-title">
-                            @{{ user.username }} <br>
-                            {% if user.first_name and user.last_name %}
-                                <p class="user-name">
-                                    <small>{{ user.first_name }} {{ user.last_name }}</small>
-                                </p>
-                            {% endif %}
-                        </h5>
-                        <div class="card-text">
-                            {{ user.bio }}
-                            <hr>
-                            <p>
-                                Date Joined: {{ user.date_joined|naturalday }}<br>
-                                Date of Birth: {{ user.date_of_birth }}<br>
-                                Location: {{ user.location }}
-                            </p>
-                            <hr>
-                            <p>
-                                <a href="{{ user.website }}" target="_blank">Website: {{ user.website }}</a><br>
-                                Education: {{ user.education }}
-                            </p>
-                        </div>
-                        <a href="#" class="btn btn-sm btn-dark">Settings</a>
+                        <p class="card-text">{{ user.bio }}</p>
+                    </div>
+                </div>
+
+                <!-- User information card -->
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="d-flex align-items-center">
+                                <span class="material-icons me-2">alternate_email</span> {{ user.email }}
+                            </li>
+                            <li class="d-flex align-items-center">
+                                <span class="material-icons me-2">location_on</span> {{ user.location }}
+                            </li>
+                            <li class="d-flex align-items-center">
+                                <span class="material-icons me-2">cake</span> {{ user.date_of_birth|date:"F j, Y" }}
+                            </li>
+                            <li class="d-flex align-items-center">
+                                <span class="material-icons me-2">school</span> {{ user.education }}
+                            </li>
+                            <li class="d-flex align-items-center">
+                                <span class="material-icons me-2">work</span> {{ user.industry }}
+                            </li>
+                        </ul>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-8 pt-3 pb-3">
+        <div class="col-lg-9">
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
                 {% for field in form %}
                     <div class="mb-3">
                         <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
@@ -53,7 +61,7 @@
                     </div>
                 {% endfor %}
                 <button type="submit" class="btn btn-primary">Update</button>
-            </div>
+            </form>
         </div>
-    </form>
+    </div>
 {% endblock %}

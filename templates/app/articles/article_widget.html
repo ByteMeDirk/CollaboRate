@@ -2,45 +2,47 @@
 {% for article in articles %}
     <div class="card mt-3">
         <div class="card-body">
+            <div class="d-flex align-items-center mb-3">
+                <img src="{{ article.author.avatar.url }}" alt="Profile Image" class="rounded-circle me-2" width="40">
+                <div>
+                    <a href="{% url "view_user" article.author.id %}" class="text-decoration-none text-dark fw-bold">
+                        {% if article.author.id == user.id %}(You) {% endif %}@{{ article.author.username }}
+                    </a>
+                    <p class="text-muted mb-0">
+                        {{ article.created_at|naturaltime }} •
+                        <a href="{% url "article_detail" article.id %}#comments"
+                           class="text-muted text-decoration-none">
+                            Comments: {{ article.comments.count }}
+                        </a>
+                    </p>
+                </div>
+            </div>
             <figure>
                 <blockquote class="blockquote">
                     <p>
-                        <a class="text-decoration-none"
+                        <a class="text-decoration-none text-dark fw-bold"
                            href="{% url "article_detail" article.id %}">{{ article.title }}</a>
                         - <small>{{ article.description|truncatewords:25 }}</small>
                     </p>
                 </blockquote>
                 <figcaption class="blockquote-footer">
-                    by <cite title="Source Title"><a
-                        href="{% url "view_user" article.author.id %}">
-                    {% if article.author.id == user.id %}(You) {% endif %}@{{ article.author.username }}
-                </a></cite>
+                    by <cite title="Source Title">@{{ article.author.username }}</cite>
                 </figcaption>
-                <p>
-                    {% if article.created_at|naturaltime == article.updated_at|naturaltime %}
-                        Created: {{ article.created_at|naturaltime }}
-                    {% else %}
-                        Edited: {{ article.updated_at|naturaltime }}
-                    {% endif %}
-                    |
-                    Rating: {{ article.calculate_rating }}
-                    |
-
-                </p>
-                <p>
-                    {# If users own this article, give it an edit button #}
-                    {% if user.id == article.author.id %}
-                        <a class="btn btn-sm btn-info">{% if article.published %}Published{% else %}
-                            Drafted{% endif %}</a>
-                        <a href="{% url "article_edit" article.id %}"
-                           class="btn btn-sm btn-success">Edit</a>
-                    {% endif %}
-                    {% for tag in article.tags.all %}
-                        <a href="{% url "article_tags" tag.slug %}"
-                           class="btn btn-sm btn-secondary">{{ tag }}</a>
-                    {% endfor %}
-                </p>
             </figure>
+            <div class="mt-3">
+                {# If users own this article, give it an edit button #}
+                {% if user.id == article.author.id %}
+                    <a class="btn btn-sm btn-info me-2">{% if article.published %}Published{% else %}
+                        Drafted{% endif %}</a>
+                    <a href="{% url "article_edit" article.id %}"
+                       class="btn btn-sm btn-success me-2">Edit</a>
+                {% endif %}
+                {% for tag in article.tags.all %}
+                    <a href="{% url "article_tags" tag.slug %}"
+                       class="btn btn-sm btn-secondary me-2">{{ tag }}</a>
+                {% endfor %}
+                <span class="badge bg-primary">{{ article.calculate_rating }}</span>
+            </div>
         </div>
     </div>
 {% endfor %}

@@ -42,10 +42,14 @@ class Article(models.Model):
     subcategory = models.CharField(max_length=50, default="Uncategorized")
     tags = TaggableManager()
     published = models.BooleanField(default=False)
+    comments = models.ManyToManyField(Auth0User, through="Comment", related_name="comments")
 
 
 class Comment(models.Model):
-    content = models.TextField()
+    """
+    This class represents a comment.
+    """
+    content = HTMLField(blank=True, null=True)
     author = models.ForeignKey(Auth0User, on_delete=models.CASCADE)
     article = models.ForeignKey(Article, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)

@@ -25,7 +25,8 @@ def home_view(request):
         '-num_times')[:10]
     # get top 5 latest articles where published is true
     articles = Article.objects.filter(published=True).order_by("-created_at")[:5]
-    return render(request, "app/home.html", {"trending_tags": trending_tags, "articles": articles})
+    recent_authors = Auth0User.objects.all().order_by("-date_joined")[:5]
+    return render(request, "app/home.html", {"trending_tags": trending_tags, "articles": articles, "recent_authors": recent_authors})
 
 
 def login_view(request):
