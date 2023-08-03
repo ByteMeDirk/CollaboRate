@@ -19,6 +19,8 @@
                         <li><a class="dropdown-item" href="{% url "article_list" %}">Explore</a></li>
                         {% if user.is_authenticated %}
                             <li><a class="dropdown-item" href="{% url "article_create" %}">Create</a></li>
+                            <li><a class="dropdown-item" href="{% url "article_my" %}">My Articles</a></li>
+                             <li><a class="dropdown-item" href="{% url "article_my_drafts" %}">My Drafts</a></li>
                         {% endif %}
                     </ul>
                 </li>

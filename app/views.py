@@ -103,14 +103,42 @@ def list_articles_view(request):
             articles_by_category[category] = []
         articles_by_category[category].append(article)
 
-    return render(request, "app/articles/article_list.html", {"articles_by_category": articles_by_category})
+    return render(request, "app/articles/article_list.html",
+                  {"title": "Explore Articles", "articles_by_category": articles_by_category})
+
+
+def list_my_articles_view(request):
+    articles = Article.objects.filter(author=request.user).order_by("-created_at")
+    # Create a dictionary to group the articles by category
+    articles_by_category = {}
+    for article in articles:
+        category = article.main_category
+        if category not in articles_by_category:
+            articles_by_category[category] = []
+        articles_by_category[category].append(article)
+    return render(request, "app/articles/article_list.html",
+                  {"title": "Explore My Articles", "articles_by_category": articles_by_category})
+
+
+def list_my_drafted_articles_view(request):
+    articles = Article.objects.filter(author=request.user, published=False).order_by("-created_at")
+    # Create a dictionary to group the articles by category
+    articles_by_category = {}
+    for article in articles:
+        category = article.main_category
+        if category not in articles_by_category:
+            articles_by_category[category] = []
+        articles_by_category[category].append(article)
+    return render(request, "app/articles/article_list.html",
+                  {"title": "Explore My Drafted Articles", "articles_by_category": articles_by_category})
 
 
 def list_articles_by_tag_view(request, tag):
     tag = get_object_or_404(Tag, slug=tag)
     articles = Article.objects.filter(tags=tag, published=True).order_by("-created_at")
     return render(
-        request, "app/articles/articles_tagged.html", {"tag": tag, "articles": articles}
+        request, "app/articles/articles_tagged.html",
+        {"title": "Explore Articles By Tag", "tag": tag, "articles": articles}
     )
 
 
@@ -133,6 +161,31 @@ def create_article_view(request):
         article.author = request.user
         if request.POST["set_published"] == "Publish":
             article.published = True
+        elif request.POST["set_published"] == "Draft":
+            article.published = False
+        article.save()
+        form.save_m2m()  # Save tags
+        return redirect("home")
+    return render(
+        request,
+        "app/articles/article_create.html",
+        {"form": form, "subcategories": SUBCATEGORIES},
+    )
+
+
+def edit_article_view(request, article_id):
+    article = get_object_or_404(Article, id=article_id)
+    if request.user != article.author:
+        return redirect("home")
+    form = ArticleCreateForm(request.POST or None, request.FILES or None, instance=article)
+    if form.is_valid():
+        # Set user as author and save
+        article = form.save(commit=False)
+        article.author = request.user
+        if request.POST["set_published"] == "Publish":
+            article.published = True
+        elif request.POST["set_published"] == "Draft":
+            article.published = False
         article.save()
         form.save_m2m()  # Save tags
         return redirect("home")

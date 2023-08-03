@@ -24,6 +24,11 @@
                 <button type="button" class="btn btn-outline-dark btn-sm">{{ article.calculate_rating }}</button>
                 <button type="button" class="btn btn-outline-dark btn-sm">👍</button>
                 <button type="button" class="btn btn-outline-dark btn-sm">👎</button>
+                {# If users own this article, give it an edit button #}
+                {% if user.id == article.author.id %}
+                    <a href="{% url "article_edit" article.id %}"
+                       class="btn btn-sm btn-success">Edit</a>
+                {% endif %}
             </div>
         </div>
     </div>

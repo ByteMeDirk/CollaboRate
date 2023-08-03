@@ -2,7 +2,7 @@ from django import forms
 from taggit.forms import TagWidget
 from tinymce.widgets import TinyMCE
 
-from .models import Auth0User, Article, Comment, Rating
+from .models import Auth0User, Article, Comment
 from .utils import MAIN_CATEGORIES
 
 
@@ -61,13 +61,37 @@ class ArticleCreateForm(forms.ModelForm):
         }
 
 
+class ArticleEditForm(forms.ModelForm):
+    """
+    This class represents a form for editing an article.
+    """
+    description = forms.CharField(
+        max_length=250,
+        widget=forms.Textarea(attrs={"rows": 2}),
+        required=True,
+        help_text="A short description of the article. Max 250 characters.",
+    )
+
+    main_category = forms.CharField(
+        max_length=50,
+        widget=forms.Select(choices=MAIN_CATEGORIES),
+        required=True,
+    )
+    body = forms.CharField(
+        widget=TinyMCE(
+            attrs={'required': False, 'cols': 30, 'rows': 10}
+        )
+    )
+
+    class Meta:
+        model = Article
+        fields = ["title", "description", "body", "main_category", "subcategory", "tags"]
+        widgets = {
+            "tags": TagWidget(),
+        }
+
+
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
         fields = ["content"]
-
-
-class RatingForm(forms.ModelForm):
-    class Meta:
-        model = Rating
-        fields = ["value"]

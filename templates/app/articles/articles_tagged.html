@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Explore Articles by <b>{{ tag }}</b></h1>
+    <h1>{{ title }}<b>: {{ tag }}</b></h1>
     <hr>
     {% include "app/articles/article_widget.html" %}
 {% endblock %}
