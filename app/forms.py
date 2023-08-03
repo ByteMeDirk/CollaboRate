@@ -91,7 +91,10 @@ class ArticleEditForm(forms.ModelForm):
         }
 
 
-class CommentForm(forms.ModelForm):
+class CommentCreateForm(forms.ModelForm):
+    content = forms.CharField(
+        widget=forms.Textarea(attrs={"rows": 1}),
+    )
     class Meta:
         model = Comment
         fields = ["content"]

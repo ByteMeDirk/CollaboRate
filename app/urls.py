@@ -13,9 +13,10 @@ from .views import (
     list_articles_by_tag_view,
     detail_article_view,
     list_articles_by_search_view,
-list_my_articles_view,
-edit_article_view,
-list_my_drafted_articles_view
+    list_my_articles_view,
+    edit_article_view,
+    list_my_drafted_articles_view,
+    delete_comment_view
 )
 
 urlpatterns = [
@@ -43,4 +44,6 @@ urlpatterns = [
     path("articles/my/", list_my_articles_view, name="article_my"),
     path("articles/my/drafts/", list_my_drafted_articles_view, name="article_my_drafts"),
     path("articles/<int:article_id>/edit/", edit_article_view, name="article_edit"),
+    # comments  -----------------------------------------------------------
+    path("comments/<int:comment_id>/<int:article_id>/delete/", delete_comment_view, name="comment_delete"),
 ]

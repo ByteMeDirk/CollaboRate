@@ -10,9 +10,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from taggit.models import Tag
 
 from app.forms import EditProfileForm
-from app.models import Auth0User
+from app.models import Auth0User, Comment
 from collabo_rate import settings
-from .forms import ArticleCreateForm
+from .forms import ArticleCreateForm, CommentCreateForm
 from .models import Article
 from .utils import SUBCATEGORIES
 
@@ -37,7 +37,7 @@ def login_view(request):
     )
 
 
-@login_required
+@login_required(redirect_field_name="home")
 def logout_view(request):
     auth_logout(request)
     return redirect("/home/")
@@ -69,7 +69,7 @@ def auth0_callback(request):
 
 
 # User Profile      ------------------------------------------------------------
-@login_required
+@login_required(redirect_field_name="home")
 def edit_profile_view(request):
     if request.method == "POST":
         form = EditProfileForm(request.POST, request.FILES, instance=request.user)
@@ -81,7 +81,7 @@ def edit_profile_view(request):
     return render(request, "app/user.html", {"form": form, "user": request.user})
 
 
-@login_required
+@login_required(redirect_field_name="home")
 def view_user_profile_view(request, user_id):
     # if user is current user, redirect to edit profile
     if int(request.user.id) == int(user_id):
@@ -152,7 +152,7 @@ def list_articles_by_search_view(request):
     )
 
 
-@login_required
+@login_required(redirect_field_name="home")
 def create_article_view(request):
     form = ArticleCreateForm(request.POST or None, request.FILES or None)
     if form.is_valid():
@@ -173,6 +173,7 @@ def create_article_view(request):
     )
 
 
+@login_required(redirect_field_name="home")
 def edit_article_view(request, article_id):
     article = get_object_or_404(Article, id=article_id)
     if request.user != article.author:
@@ -198,10 +199,23 @@ def edit_article_view(request, article_id):
 
 def detail_article_view(request, article_id):
     article = get_object_or_404(Article, id=article_id)
-    return render(request, "app/articles/article_detail.html", {"article": article})
+    comments = Comment.objects.filter(article=article)
+
+    if request.method == "POST":
+        form = CommentCreateForm(request.POST)
+        if form.is_valid():
+            comment = form.save(commit=False)
+            comment.article = article
+            comment.author = request.user
+            comment.save()
+            return redirect("article_detail", article_id=article_id)
+    else:
+        form = CommentCreateForm()
+
+    return render(request, "app/articles/article_detail.html", {"article": article, "comments": comments, "form": form})
 
 
-@login_required
+@login_required(redirect_field_name="home")
 def get_article_subcategories_view(request):
     main_category = request.GET.get("option")
     subcategories = SUBCATEGORIES.get(main_category, [])
@@ -209,3 +223,13 @@ def get_article_subcategories_view(request):
     for category in subcategories:
         options_html += f'<option value="{category[0]}">{category[1]}</option>'
     return HttpResponse(options_html)
+
+
+# comments          ------------------------------------------------------------
+@login_required(redirect_field_name="home")
+def delete_comment_view(request, comment_id, article_id):
+    comment = get_object_or_404(Comment, id=comment_id)
+    if request.user != comment.author:
+        return redirect("home")
+    comment.delete()
+    return redirect("article_detail", article_id=article_id)
