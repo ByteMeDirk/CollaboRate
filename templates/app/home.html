@@ -1,121 +1,31 @@
 {% extends "base.html" %}
 {% load humanize %}
+{% load static %}
 {% block content %}
-    {% include "app/search.html" %}
-    <div class="mt-3">
-        <div class="row">
-            <!-- User Profile Section (Expanded on Big Screens) -->
-            <div class="col-lg-3 d-none d-lg-block">
-                <!-- Twitter-like profile image -->
-                <div class="text-center mb-3">
-                    <img src="{{ user.avatar.url }}" alt="Profile Image" class="rounded-circle img-fluid" width="150">
-                </div>
-
-                <!-- User's username -->
-                <div class="text-center mb-3">
-                    <h4>@{{ user.username }}</h4>
-                </div>
-
-                <!-- User's bio -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <p class="card-text">{{ user.bio }}</p>
-                    </div>
-                </div>
-
-                <!-- User information card -->
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <ul class="list-unstyled mb-0">
-                            <li class="d-flex align-items-center">
-                                <span class="material-icons me-2">alternate_email</span> {{ user.email }}
-                            </li>
-                            <li class="d-flex align-items-center">
-                                <span class="material-icons me-2">location_on</span> {{ user.location }}
-                            </li>
-                            <li class="d-flex align-items-center">
-                                <span class="material-icons me-2">cake</span> {{ user.date_of_birth|date:"F j, Y" }}
-                            </li>
-                            <li class="d-flex align-items-center">
-                                <span class="material-icons me-2">school</span> {{ user.education }}
-                            </li>
-                            <li class="d-flex align-items-center">
-                                <span class="material-icons me-2">work</span> {{ user.industry }}
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                <!-- User settings, privacy, and profile edit buttons -->
-                <div class="d-grid gap-2 mt-3">
-                    <a href="#" class="btn btn-primary">User Settings</a>
-                    <a href="#" class="btn btn-info">Privacy</a>
-                    <a href="{% url "profile" %}" class="btn btn-secondary">Edit Profile</a>
-                </div>
-            </div>
-
-            <!-- Button to open the User Profile Offcanvas on small screens -->
-            <div class="col-lg-3 d-lg-none mb-3">
-                <button class="btn btn-primary w-100" type="button" data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasProfile" aria-controls="offcanvasProfile">
-                    View Profile
-                </button>
-            </div>
-
-            <!-- Content Feed Section -->
-            <div class="col-lg-9 col-md-12 order-lg-2 order-md-3" style="overflow-y: auto; max-height: 100vh;">
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Trending Hashtags</h5>
-                        <div class="trending-hashtags">
-                            {% for tag in trending_tags %}
-                                <a href="{% url "article_tags" tag.slug %}" class="hashtag">{{ tag }}</a>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card mt-3">
-                    <div class="card-body">
-                        <h5 class="card-title">Recent Authors</h5>
-                        <div class="trending-users">
-                            {% for recent_author in recent_authors %}
-                                <a href="{% url "view_user" recent_author.id %}" class="user mr-5">
-                                    <img src="{{ recent_author.avatar.url }}" alt="User Avatar"
-                                         class="rounded-circle me-2" width="30">
-                                    @{{ recent_author.username }}
-                                </a>
-                            {% endfor %}
-                        </div>
-                    </div>
-                </div>
-                {% include "app/articles/article_widget.html" %}
-            </div>
-
-            <!-- Offcanvas -->
-            <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasProfile"
-                 aria-labelledby="offcanvasProfileLabel">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="offcanvasProfileLabel">@{{ user.username }}'s Profile</h5>
-                    <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
-                            aria-label="Close"></button>
-                </div>
-                <div class="offcanvas-body">
+    {% if user.is_authenticated %}
+        {% include "app/search.html" %}
+        <div class="mt-3">
+            <div class="row">
+                <!-- User Profile Section (Expanded on Big Screens) -->
+                <div class="col-lg-3 d-none d-lg-block">
                     <!-- Twitter-like profile image -->
                     <div class="text-center mb-3">
                         <img src="{{ user.avatar.url }}" alt="Profile Image" class="rounded-circle img-fluid"
                              width="150">
                     </div>
+
                     <!-- User's username -->
                     <div class="text-center mb-3">
                         <h4>@{{ user.username }}</h4>
                     </div>
+
                     <!-- User's bio -->
                     <div class="card mb-3">
                         <div class="card-body">
                             <p class="card-text">{{ user.bio }}</p>
                         </div>
                     </div>
+
                     <!-- User information card -->
                     <div class="card mb-3">
                         <div class="card-body">
@@ -138,6 +48,7 @@
                             </ul>
                         </div>
                     </div>
+
                     <!-- User settings, privacy, and profile edit buttons -->
                     <div class="d-grid gap-2 mt-3">
                         <a href="#" class="btn btn-primary">User Settings</a>
@@ -145,7 +56,167 @@
                         <a href="{% url "profile" %}" class="btn btn-secondary">Edit Profile</a>
                     </div>
                 </div>
+
+                <!-- Button to open the User Profile Offcanvas on small screens -->
+                <div class="col-lg-3 d-lg-none mb-3">
+                    <button class="btn btn-primary w-100" type="button" data-bs-toggle="offcanvas"
+                            data-bs-target="#offcanvasProfile" aria-controls="offcanvasProfile">
+                        View Profile
+                    </button>
+                </div>
+
+                <!-- Content Feed Section -->
+                <div class="col-lg-9 col-md-12 order-lg-2 order-md-3" style="overflow-y: auto; max-height: 100vh;">
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Trending Hashtags</h5>
+                            <div class="trending-hashtags">
+                                {% for tag in trending_tags %}
+                                    <a href="{% url "article_tags" tag.slug %}" class="hashtag">{{ tag }}</a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card mt-3">
+                        <div class="card-body">
+                            <h5 class="card-title">Recent Authors</h5>
+                            <div class="trending-users">
+                                {% for recent_author in recent_authors %}
+                                    <a href="{% url "view_user" recent_author.id %}" class="user mr-5">
+                                        <img src="{{ recent_author.avatar.url }}" alt="User Avatar"
+                                             class="rounded-circle me-2" width="30">
+                                        @{{ recent_author.username }}
+                                    </a>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    {% include "app/articles/article_widget.html" %}
+                </div>
+
+                <!-- Offcanvas -->
+                <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasProfile"
+                     aria-labelledby="offcanvasProfileLabel">
+                    <div class="offcanvas-header">
+                        <h5 class="offcanvas-title" id="offcanvasProfileLabel">@{{ user.username }}'s Profile</h5>
+                        <button type="button" class="btn-close text-reset" data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body">
+                        <!-- Twitter-like profile image -->
+                        <div class="text-center mb-3">
+                            <img src="{{ user.avatar.url }}" alt="Profile Image" class="rounded-circle img-fluid"
+                                 width="150">
+                        </div>
+                        <!-- User's username -->
+                        <div class="text-center mb-3">
+                            <h4>@{{ user.username }}</h4>
+                        </div>
+                        <!-- User's bio -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <p class="card-text">{{ user.bio }}</p>
+                            </div>
+                        </div>
+                        <!-- User information card -->
+                        <div class="card mb-3">
+                            <div class="card-body">
+                                <ul class="list-unstyled mb-0">
+                                    <li class="d-flex align-items-center">
+                                        <span class="material-icons me-2">alternate_email</span> {{ user.email }}
+                                    </li>
+                                    <li class="d-flex align-items-center">
+                                        <span class="material-icons me-2">location_on</span> {{ user.location }}
+                                    </li>
+                                    <li class="d-flex align-items-center">
+                                        <span class="material-icons me-2">cake</span> {{ user.date_of_birth|date:"F j, Y" }}
+                                    </li>
+                                    <li class="d-flex align-items-center">
+                                        <span class="material-icons me-2">school</span> {{ user.education }}
+                                    </li>
+                                    <li class="d-flex align-items-center">
+                                        <span class="material-icons me-2">work</span> {{ user.industry }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <!-- User settings, privacy, and profile edit buttons -->
+                        <div class="d-grid gap-2 mt-3">
+                            <a href="#" class="btn btn-primary">User Settings</a>
+                            <a href="#" class="btn btn-info">Privacy</a>
+                            <a href="{% url "profile" %}" class="btn btn-secondary">Edit Profile</a>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </div>
+    {% else %}
+        <!-- Hero Section -->
+        <section class="hero-section mt-3">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-6">
+                        <h1 class="hero-title">Welcome to Collabo💫Rate</h1>
+                        <p class="hero-description">
+                            CollaboRate is a platform where you can explore and share articles on various topics.
+                            Join our community of writers and readers today!
+                        </p>
+                        <a href="{% url 'login' %}" class="btn btn-primary">Get Started</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Trending Tags Section -->
+        <section class="trending-tags-section mt-3">
+            <div class="container">
+                <h2 class="section-title">Trending Hashtags</h2>
+                <div class="row">
+                    {% for tag in trending_tags %}
+                        <div class="col-lg-3 col-md-6">
+                            <a href="{% url 'article_tags' tag.slug %}" class="tag-link">{{ tag }}</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Latest Articles Section -->
+        <section class="latest-articles-section mt-3">
+            <div class="container">
+                <h2 class="section-title">Latest Articles</h2>
+                <div class="row">
+                    {% for article in articles %}
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card article-card">
+                                <div class="card-body">
+                                    <h5 class="card-title">{{ article.title }}</h5>
+                                    <p class="card-text">{{ article.description }}</p>
+                                    <a href="{% url 'article_detail' article.id %}" class="btn btn-primary">Read
+                                        More</a>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </section>
+
+        <!-- About Us Section -->
+        <section class="about-us-section">
+            <div class="container">
+                <h2 class="section-title">About CollaboRate</h2>
+                <p class="section-description">
+                    CollaboRate is a community-driven platform that connects writers and readers from all around the
+                    world.
+                    We believe in the power of collaboration and creativity, and our platform provides a space for
+                    individuals
+                    to express their thoughts, share knowledge, and engage in meaningful discussions through
+                    articles.
+                </p>
+                <a href="#" class="btn btn-secondary">Learn More</a>
+            </div>
+        </section>
+    {% endif %}
 {% endblock %}

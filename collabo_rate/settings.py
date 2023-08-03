@@ -47,7 +47,7 @@ INSTALLED_APPS = [
     "actstream",
     "social_django",
     "widget_tweaks",
-    'tinymce',
+    "tinymce",
     "taggit",
     # Local apps
     "collabo_rate",
@@ -109,11 +109,11 @@ TEMPLATES = [
 WSGI_APPLICATION = "collabo_rate.wsgi.application"
 
 TINYMCE_DEFAULT_CONFIG = {
-    'height': 360,
-    'cleanup_on_startup': True,
-    'custom_undo_redo_levels': 20,
-    'toolbar': "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons | codesample",
-    'plugins': '''print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media store code codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern help emoticons'''
+    "height": 360,
+    "cleanup_on_startup": True,
+    "custom_undo_redo_levels": 20,
+    "toolbar": "styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image | print preview media fullpage | forecolor backcolor emoticons | codesample",
+    "plugins": """print preview fullpage searchreplace autolink directionality visualblocks visualchars fullscreen image link media store code codesample table charmap hr pagebreak nonbreaking anchor toc insertdatetime advlist lists wordcount imagetools textpattern help emoticons""",
 }
 
 # Database

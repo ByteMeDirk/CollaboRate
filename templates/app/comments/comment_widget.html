@@ -42,22 +42,35 @@
                             <hr>
                         {% endfor %}
                     </div>
-                    <div class="card-footer py-3 border-0" style="background-color: #f8f9fa;">
-                        <div class="d-flex flex-start w-100">
-                            <img class="rounded-circle shadow-1-strong me-3" src="{{ user.avatar.url }}" alt="avatar"
-                                 width="40" height="40"/>
-                            <div class="form-outline w-100">
-                                <label for="id_content">Comment</label>
-                                {{ form.content|add_class:"form-control" }}
-                                <div class="invalid-feedback">
-                                    {{ form.content.errors }}
+                    {% if user.is_authenticated %}
+                        <div class="card-footer py-3 border-0" style="background-color: #f8f9fa;">
+                            <div class="d-flex flex-start w-100">
+                                <img class="rounded-circle shadow-1-strong me-3" src="{{ user.avatar.url }}"
+                                     alt="avatar"
+                                     width="40" height="40"/>
+                                <div class="form-outline w-100">
+                                    <label for="id_content">Comment</label>
+                                    {{ form.content|add_class:"form-control" }}
+                                    <div class="invalid-feedback">
+                                        {{ form.content.errors }}
+                                    </div>
                                 </div>
                             </div>
+                            <div class="float-end mt-2 pt-1">
+                                <button type="submit" class="btn btn-info btn-sm">Post comment</button>
+                            </div>
                         </div>
-                        <div class="float-end mt-2 pt-1">
-                            <button type="submit" class="btn btn-info btn-sm">Post comment</button>
+                    {% else %}
+                        <div class="card-footer py-3 border-0" style="background-color: #f8f9fa;">
+                            <p>
+                                <a href="{% url "login" %}?next={{ request.path }}" class="text-decoration-none">
+                                    Log in
+                                </a>
+                                to make a comment.
+                            </p>
                         </div>
-                    </div>
+                    {% endif %}
+
                 </div>
             </div>
         </div>

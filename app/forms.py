@@ -35,6 +35,7 @@ class ArticleCreateForm(forms.ModelForm):
     """
     This class represents a form for creating an article.
     """
+
     description = forms.CharField(
         max_length=250,
         widget=forms.Textarea(attrs={"rows": 2}),
@@ -48,14 +49,19 @@ class ArticleCreateForm(forms.ModelForm):
         required=True,
     )
     body = forms.CharField(
-        widget=TinyMCE(
-            attrs={'required': False, 'cols': 30, 'rows': 10}
-        )
+        widget=TinyMCE(attrs={"required": False, "cols": 30, "rows": 10})
     )
 
     class Meta:
         model = Article
-        fields = ["title", "description", "body", "main_category", "subcategory", "tags"]
+        fields = [
+            "title",
+            "description",
+            "body",
+            "main_category",
+            "subcategory",
+            "tags",
+        ]
         widgets = {
             "tags": TagWidget(),
         }
@@ -65,6 +71,7 @@ class ArticleEditForm(forms.ModelForm):
     """
     This class represents a form for editing an article.
     """
+
     description = forms.CharField(
         max_length=250,
         widget=forms.Textarea(attrs={"rows": 2}),
@@ -78,25 +85,34 @@ class ArticleEditForm(forms.ModelForm):
         required=True,
     )
     body = forms.CharField(
-        widget=TinyMCE(
-            attrs={'required': False, 'cols': 30, 'rows': 10}
-        )
+        widget=TinyMCE(attrs={"required": False, "cols": 30, "rows": 10})
     )
 
     class Meta:
         model = Article
-        fields = ["title", "description", "body", "main_category", "subcategory", "tags"]
+        fields = [
+            "title",
+            "description",
+            "body",
+            "main_category",
+            "subcategory",
+            "tags",
+        ]
         widgets = {
             "tags": TagWidget(),
         }
 
 
 class CommentCreateForm(forms.ModelForm):
+    """
+    This class represents a form for creating a comment.
+    """
     content = forms.CharField(
         widget=TinyMCE(
-            attrs={'required': False, 'cols': 30, 'rows': 10},
+            attrs={"required": False, "cols": 30, "rows": 10},
         )
     )
+
     class Meta:
         model = Comment
         fields = ["content"]
